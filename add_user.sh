@@ -9,15 +9,6 @@ check_mailutils() {
     fi
 }
 
-# Function to check if ssmtp is installed
-check_ssmtp() {
-    if ! command -v ssmtp &> /dev/null; then
-        echo "ssmtp is not installed. Installing..."
-        sudo apt-get update
-        sudo apt-get install -y ssmtp
-    fi
-}
-
 # Prompt for username and email
 read -p "Enter the username: " USERNAME
 read -p "Enter the email address: " EMAIL
@@ -39,10 +30,10 @@ if [ "$ADD_TO_DOCKER_GROUP" == "y" ]; then
     echo "User $USERNAME added to the docker group"
 fi
 
-# Check and install ssmtp if necessary
-check_ssmtp
+# Check and install mailutils if necessary
+check_mailutils
 
-# Send the password to the user's email using ssmtp
-echo -e "To: $EMAIL\nSubject: Account Created\n\nYour account has been created. Username: $USERNAME, Password: $PASSWORD" | ssmtp $EMAIL
+# Send the password to the user's email using mailutils
+echo -e "Your account has been created.\nUsername: $USERNAME\nPassword: $PASSWORD" | mail -s "Account Created" "$EMAIL"
 
 echo "Password has been emailed to $EMAIL"
